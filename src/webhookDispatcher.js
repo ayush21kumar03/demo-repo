@@ -7,15 +7,16 @@ export const BASE_RETRY_DELAY_MS = 1000;
 export function isRetryable(outcome) {
   // Network-level errors are transient and worth retrying.
   if (outcome.networkError) return true;
-  // Upstream 5xx errors and 429 (rate limiting) are transient and should be retried.
-  if (outcome.status >= 500 || outcome.status === 429) return true;
+  // Upstream 5xx errors and 429 (rate limited) are also transient and retryable.
+  if (outcome.status >= 500) return true;
+  if (outcome.status === 429) return true;
   return false;
 }
 
 /** How long to wait before the next attempt. */
 export function retryDelayMs(outcome, attempt) {
-  // Honour any Retry-After hint from the upstream (in seconds).
-  if (outcome.retryAfterSeconds != null) {
+  // Honour any Retry-After hint from the upstream (e.g. 429/503 responses).
+  if (typeof outcome.retryAfterSeconds === 'number' && outcome.retryAfterSeconds >= 0) {
     return outcome.retryAfterSeconds * 1000;
   }
   return BASE_RETRY_DELAY_MS * attempt;
