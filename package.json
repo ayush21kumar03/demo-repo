@@ -1,0 +1,8 @@
+{
+  "name": "demo-repo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Procol billing + integrations service (demo slice). The codebase dev-agent fixes.",
+  "scripts": { "test": "vitest run" }
+}
