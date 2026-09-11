@@ -6,7 +6,7 @@ export const MAX_ATTEMPTS = 3;
 export function isRetryable(outcome) {
   // Network-level errors are transient and worth retrying.
   if (outcome.networkError) return true;
-  // Upstream 5xx responses are also transient and worth retrying.
+  // Upstream 5xx responses are also transient and should be retried.
   if (typeof outcome.status === 'number' && outcome.status >= 500 && outcome.status < 600) return true;
   return false;
 }
