@@ -7,7 +7,9 @@ export const BASE_RETRY_DELAY_MS = 1000;
 export function isRetryable(outcome) {
   // Network-level errors are transient and worth retrying.
   if (outcome.networkError) return true;
-  return false; // ← the bug: upstream 5xx responses are dropped, never retried
+  // Upstream 5xx responses and 429 (rate limiting) are also transient and should be retried.
+  if (outcome.status >= 500 || outcome.status === 429) return true;
+  return false;
 }
 
 /** How long to wait before the next attempt. */
